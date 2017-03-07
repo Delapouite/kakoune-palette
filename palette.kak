@@ -7,25 +7,48 @@ define-command palette %{
   # it must follow this format: 1486635122:1|Foo:3|{red,yellow+b}Bar
   # which is a timetamp, then a list of line number|text tuples separated by colons
   declare-option line-flags palette_flags
+  # from previous call
+  remove-highlighter hlflags_palette_flags
   add-highlighter flag_lines Palette palette_flags
 
+  # awk quick surival guide:
+  # - NR is line number
+  # - substr starts at 1
   %sh{
     case "$kak_opt_filetype" in
 
     'kak')
-      awk -v file="$kak_buffile" -v stamp="$kak_timestamp" '
+      awk_script='
         /face / {
-            flags = flags NR "|{" $2 "}" $2 ":"
+          flags = flags NR "|{" $2 "}" $2 ":"
         }
-        END {
-            print "set \"buffer=" file "\" palette_flags %{" stamp ":" substr(flags,  1, length(flags)-1)  "}"
+      '
+      ;;
+
+    'css')
+      awk_script='
+        function toKakColor(hex) {
+          return "rgb\\:" substr(hex, 2, 6)
         }
-      ' "$kak_buffile" | kak -p "$kak_session"
+        /color: / {
+          flags = flags NR "|{" toKakColor($2) "," toKakColor($2) "}XXX:"
+        }
+      '
       ;;
 
     *) echo 'echo "palette only works on kak files for now"'
       ;;
 
     esac
+
+    if [ -n "$awk_script" ]; then
+      awk_script_end='
+        END {
+          print "set \"buffer=" file "\" palette_flags %{" stamp ":" substr(flags,  1, length(flags)-1)  "}"
+        }
+      '
+      awk_script=$awk_script$awk_script_end
+      awk -v file="$kak_buffile" -v stamp="$kak_timestamp" "$awk_script" "$kak_buffile" | kak -p "$kak_session"
+    fi
   }
 }

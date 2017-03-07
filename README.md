@@ -18,9 +18,9 @@ The screenshot below illustrates this scenario (taken in xterm with base16-solar
 
 ![kakoune-palette](https://raw.githubusercontent.com/Delapouite/kakoune-palette/master/screenshot.png)
 
-## TODO
+## In progress
 
-Extend support to preview colors in CSS files, for `color`, `background-color`, `border-color`…
+CSS files support: all props ending with *color* and only with colors in 6 digits hex (ex #ff0000)
 
 ## Related project
 
