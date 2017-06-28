@@ -22,9 +22,10 @@ The screenshot below illustrates this scenario (taken in xterm with base16-solar
 
 CSS files support: all props ending with *color* and only with colors in 6 digits hex (ex #ff0000)
 
-## Related project
+## See also
 
-If you like colors and kakoune, you might also be interested in [kakoune-ink](https://delapouite.github.io/kakoune-ink/).
+- [kakoune-ink](https://delapouite.github.io/kakoune-ink/): online colorscheme editor
+- [kakoune-colors](https://github.com/delapouite/kakoune-colors): collection of dark and light colorschemes
 
 ## Licence
 
