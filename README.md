@@ -20,7 +20,8 @@ The screenshot below illustrates this scenario (taken in xterm with base16-solar
 
 ## In progress
 
-CSS files support: all props ending with *color* and only with colors in 6 digits hex (ex #ff0000)
+Support for `css`, `less`, `sass`, `scss` and `stylus`:
+- all props ending with *color* and only in 3 digits hex (ex #f00) or 6 digits hex (ex #ff0000) formats
 
 ## See also
 

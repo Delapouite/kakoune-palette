@@ -25,10 +25,19 @@ define-command palette %{
       '
       ;;
 
-    'css')
+    'css'|'less'|'sass'|'scss'|'stylus')
       awk_script='
         function toKakColor(hex) {
-          return "rgb\\:" substr(hex, 2, 6)
+          if (length(hex) == 7) {
+            return "rgb\\:" substr(hex, 2, 6)
+          } else if (length(hex) == 4) {
+          	r = substr(hex, 2, 1)
+          	g = substr(hex, 3, 1)
+          	b = substr(hex, 4, 1)
+						return "rgb\\:" r r g g b b
+          } else {
+						return "rgb\\:000000"
+          }
         }
         /color: / {
           flags = flags NR "|{" toKakColor($2) "," toKakColor($2) "}XXX:"
@@ -36,7 +45,7 @@ define-command palette %{
       '
       ;;
 
-    *) echo 'echo "palette only works on kak files for now"'
+    *) echo 'echo "filetype not supported by palette"'
       ;;
 
     esac
