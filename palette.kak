@@ -1,4 +1,4 @@
-# use this palette command in a colorscheme kak file
+# use this palette command in a colorscheme kak file or the output of 'debug faces'
 # it will add a color preview in a new column on the left for each line with a face declaration
 
 define-command palette %{
@@ -11,9 +11,14 @@ define-command palette %{
   remove-highlighter hlflags_palette_flags
   add-highlighter flag_lines Palette palette_flags
 
-  # awk quick surival guide:
+  # populate $kak_selection to feed the whole buffer content to awk
+  exec '%'
+
+  # awk quick survival guide:
   # - NR is line number
   # - substr starts at 1
+  # - the v flag is used to assign argument
+  # - gsub() returns 0 or 1, but mutates 3rd arg
   %sh{
     case "$kak_opt_filetype" in
 
@@ -31,12 +36,12 @@ define-command palette %{
           if (length(hex) == 7) {
             return "rgb\\:" substr(hex, 2, 6)
           } else if (length(hex) == 4) {
-          	r = substr(hex, 2, 1)
-          	g = substr(hex, 3, 1)
-          	b = substr(hex, 4, 1)
-						return "rgb\\:" r r g g b b
+            r = substr(hex, 2, 1)
+            g = substr(hex, 3, 1)
+            b = substr(hex, 4, 1)
+            return "rgb\\:" r r g g b b
           } else {
-						return "rgb\\:000000"
+            return "rgb\\:000000"
           }
         }
         /color: / {
@@ -45,19 +50,32 @@ define-command palette %{
       '
       ;;
 
-    *) echo 'echo "filetype not supported by palette"'
+    *)
+      # parse the output of 'debug faces' command
+      if [ "$kak_bufname" = '*debug*' ]; then
+        awk_script='
+          / \* / {
+            gsub(":", "\\:", $3)
+            flags = flags NR "|{" $3 "}" $2
+          }
+        '
+      else
+        echo 'echo -markup "{Error}filetype not supported by palette"'
+      fi
       ;;
 
     esac
 
     if [ -n "$awk_script" ]; then
-      awk_script_end='
+      awk_script=$awk_script'
         END {
-          print "set \"buffer=" file "\" palette_flags %{" stamp ":" substr(flags,  1, length(flags)-1)  "}"
+          print "set \"buffer=" file "\" palette_flags %{" stamp ":" substr(flags, 1, length(flags)-1) "};"
         }
       '
-      awk_script=$awk_script$awk_script_end
-      awk -v file="$kak_buffile" -v stamp="$kak_timestamp" "$awk_script" "$kak_buffile" | kak -p "$kak_session"
+      printf %s\\n "$kak_selection" | awk -v file="$kak_buffile" -v stamp="$kak_timestamp" "$awk_script" | kak -p "$kak_session"
     fi
   }
+
+  # back to normal after '%'
+  exec ';'
 }

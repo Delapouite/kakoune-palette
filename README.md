@@ -18,6 +18,8 @@ The screenshot below illustrates this scenario (taken in xterm with base16-solar
 
 ![kakoune-palette](https://raw.githubusercontent.com/Delapouite/kakoune-palette/master/screenshot.png)
 
+You can also use the `palette` command on the output of the `debug faces` command in the `*debug*` buffer.
+
 ## In progress
 
 Support for `css`, `less`, `sass`, `scss` and `stylus`:
