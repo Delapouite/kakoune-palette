@@ -8,8 +8,8 @@ define-command palette -docstring 'show faces in gutter' %{
   # which is a timestamp, then a list of line number|text tuples separated by colons
   declare-option line-specs palette_flags
   # from previous call
-  remove-highlighter window/hlflags_palette_flags
-  add-highlighter window flag_lines Palette palette_flags
+  remove-highlighter window/palette
+  add-highlighter window/palette flag-lines Palette palette_flags
 
   # populate $kak_selection to feed the whole buffer content to awk
   execute-keys '%'
@@ -19,13 +19,13 @@ define-command palette -docstring 'show faces in gutter' %{
   # - substr starts at 1
   # - the v flag is used to assign argument
   # - gsub() returns 0 or 1, but mutates 3rd arg
-  %sh{
+  evaluate-commands %sh{
     case "$kak_opt_filetype" in
 
     'kak')
       awk_script='
         /face / {
-          flags = flags NR "|{" $3 "}" $3 ":"
+          flags = flags NR "|{" $3 "}" $3 " "
         }
       '
       ;;
@@ -34,18 +34,18 @@ define-command palette -docstring 'show faces in gutter' %{
       awk_script='
         function toKakColor(hex) {
           if (length(hex) == 7) {
-            return "rgb\\:" substr(hex, 2, 6)
+            return "rgb:" substr(hex, 2, 6)
           } else if (length(hex) == 4) {
             r = substr(hex, 2, 1)
             g = substr(hex, 3, 1)
             b = substr(hex, 4, 1)
-            return "rgb\\:" r r g g b b
+            return "rgb:" r r g g b b
           } else {
-            return "rgb\\:000000"
+            return "rgb:000000"
           }
         }
         /color: / {
-          flags = flags NR "|{" toKakColor($2) "," toKakColor($2) "}XXX:"
+          flags = flags NR "|{" toKakColor($2) "," toKakColor($2) "}XXX "
         }
       '
       ;;
@@ -55,7 +55,7 @@ define-command palette -docstring 'show faces in gutter' %{
       if [ "$kak_bufname" = '*debug*' ]; then
         awk_script='
           / \* / {
-            gsub(":", "\\:", $3)
+            gsub(":", " ", $2)
             flags = flags NR "|{" $3 "}" $2
           }
         '
@@ -69,7 +69,7 @@ define-command palette -docstring 'show faces in gutter' %{
     if [ -n "$awk_script" ]; then
       awk_script=$awk_script'
         END {
-          print "set-option \"buffer=" file "\" palette_flags %{" stamp ":" substr(flags, 1, length(flags)-1) "};"
+          print "set-option \"buffer=" file "\" palette_flags " stamp " " substr(flags, 1, length(flags)-1)
         }
       '
       printf %s\\n "$kak_selection" | awk -v file="$kak_buffile" -v stamp="$kak_timestamp" "$awk_script" | kak -p "$kak_session"
