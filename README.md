@@ -8,6 +8,12 @@ Useful to create your own colorschemes or visualize RGBA colors.
 
 Add `palette.kak` to your autoload dir: `~/.config/kak/autoload/`.
 
+Or via [plug.kak](https://github.com/andreyorst/plug.kak):
+
+```
+plug 'delapouite/kakoune-palette'
+```
+
 ## Usage
 
 ### palette-status
@@ -48,6 +54,7 @@ Support for `css`, `less`, `sass`, `scss` and `stylus`:
 
 - [kakoune-ink](https://delapouite.github.io/kakoune-ink/): online colorscheme editor
 - [kakoune-colors](https://github.com/delapouite/kakoune-colors): collection of dark and light colorschemes
+- [:doc faces](https://github.com/mawww/kakoune/blob/master/doc/pages/faces.asciidoc)
 
 ## Licence
 
