@@ -13,7 +13,7 @@ define-command palette-status -docstring 'show main selection color in status ba
         b = substr($1, 3, 1)
         $1 = r r g g b b
       }
-      print "evaluate-commands -client " client " echo -markup {rgb:" $1 "} ██████"
+      print "try %{ evaluate-commands -client " client " echo -markup {rgb:" $1 "} ██████ }"
     }'
     printf %s\\n "$kak_selection" | awk -v client="$kak_client" "$awk_script" | kak -p "$kak_session"
   }
