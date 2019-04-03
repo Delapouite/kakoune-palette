@@ -54,6 +54,7 @@ Support for `css`, `less`, `sass`, `scss` and `stylus`:
 
 - [kakoune-ink](https://delapouite.github.io/kakoune-ink/): online colorscheme editor
 - [kakoune-colors](https://github.com/delapouite/kakoune-colors): collection of dark and light colorschemes
+- [colorcol](https://github.com/SolitudeSF/colorcol)
 - [:doc faces](https://github.com/mawww/kakoune/blob/master/doc/pages/faces.asciidoc)
 
 ## Licence
